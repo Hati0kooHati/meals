@@ -13,6 +13,13 @@ class MealInfoScreen extends StatefulWidget {
 }
 
 class _MealInfoScreenState extends State<MealInfoScreen> {
+  void showInfoAfterStarPressed(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(context) {
     return Scaffold(
@@ -24,6 +31,19 @@ class _MealInfoScreenState extends State<MealInfoScreen> {
               setState(() {
                 context.read<FavoriteMealsProvider>().onFavoriteButtonTapped(
                   meal: widget.meal,
+                );
+
+                final List<String> actionInfo =
+                    context
+                        .read<FavoriteMealsProvider>()
+                        .favoriteMeals
+                        .contains(widget.meal)
+                    ? ["added", "to"]
+                    : ["deleted", "from"];
+
+                showInfoAfterStarPressed(
+                  context,
+                  "meal has been ${actionInfo[0]} ${actionInfo[1]} favorites",
                 );
               });
             },
