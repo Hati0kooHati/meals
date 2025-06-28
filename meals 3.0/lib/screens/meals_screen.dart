@@ -33,7 +33,21 @@ class MealsScreen extends StatelessWidget {
       ),
     );
 
-    if (meals.isNotEmpty) {
+    // it's called to display favorite meals
+    if (title == null &&
+        context.read<FavoriteMealsProvider>().favoriteMeals.isNotEmpty) {
+      List<Meal> favoriteMeals = context
+          .watch<FavoriteMealsProvider>()
+          .favoriteMeals;
+      return ListView.builder(
+        itemCount: meals.length,
+        itemBuilder: (context, index) {
+          return MealWidget(meal: favoriteMeals[index]);
+        },
+      );
+    }
+
+    if (title != null && meals.isNotEmpty) {
       body = ListView.builder(
         itemCount: meals.length,
         itemBuilder: (context, index) {
@@ -42,24 +56,8 @@ class MealsScreen extends StatelessWidget {
       );
     }
 
-    if (title == null) {
-      body = Consumer<FavoriteMealsProvider>(
-        builder: (context, favoriteMealsProvider, child) {
-          return ListView.builder(
-            itemCount: meals.length,
-            itemBuilder: (context, index) {
-              return MealWidget(
-                meal: favoriteMealsProvider.favoriteMeals[index],
-              );
-            },
-          );
-        },
-      );
-      return body;
-    }
-
     return Scaffold(
-      appBar: AppBar(title: Text(title!)),
+      appBar: title != null ? AppBar(title: Text(title!)) : null,
       body: body,
     );
   }
