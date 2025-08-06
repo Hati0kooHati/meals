@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:meals_app/data/data.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals_app/models/category.dart';
+import 'package:meals_app/providers/categories_provider.dart';
 import 'package:meals_app/screens/meals_screen.dart';
 import 'package:meals_app/widgets/category_grid_widget.dart';
 
-class CategoriesScreen extends StatefulWidget {
+class CategoriesScreen extends ConsumerStatefulWidget {
   const CategoriesScreen({super.key});
 
   @override
-  State<CategoriesScreen> createState() => _CategoriesScreenState();
+  ConsumerState<CategoriesScreen> createState() => _CategoriesScreenState();
 }
 
-class _CategoriesScreenState extends State<CategoriesScreen>
+class _CategoriesScreenState extends ConsumerState<CategoriesScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
@@ -47,46 +48,48 @@ class _CategoriesScreenState extends State<CategoriesScreen>
 
   @override
   Widget build(context) {
-    return AnimatedBuilder(
-      animation: _animationController,
-      child: GridView(
-        padding: EdgeInsets.all(24),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 3 / 2,
-          mainAxisSpacing: 20.0,
-          crossAxisSpacing: 20.0,
-        ),
-        children: [
-          for (Category category in categoriesList)
-            CategoryGridItem(
-              category: category,
-              onSelectedCategory: onSelectedCategory,
-            ),
-        ],
-      ),
-      builder: (context, child) {
-        // return Padding(
-        //   padding: EdgeInsetsGeometry.only(
-        //     top: 100 - _animationController.value,
-        //     bottom: 100 - _animationController.value,
-        //     right: 100 - _animationController.value,
-        //     left: 100 - _animationController.value,
-        //   ),
-        //   child: child,
-        // );
-        return SlideTransition(
-          position: Tween(begin: const Offset(0, 1), end: const Offset(0, 0))
-              .animate(
-                CurvedAnimation(
-                  parent: _animationController,
-                  curve: Curves.elasticOut,
+    return ref
+        .watch(categoriesProvider)
+        .when(
+          data: (categoriesList) => Scaffold(
+            body: AnimatedBuilder(
+              animation: _animationController,
+              child: GridView(
+                padding: EdgeInsets.all(24),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 3 / 2,
+                  mainAxisSpacing: 20.0,
+                  crossAxisSpacing: 20.0,
                 ),
+                children: [
+                  for (Category category in categoriesList)
+                    CategoryGridItem(
+                      category: category,
+                      onSelectedCategory: onSelectedCategory,
+                    ),
+                ],
               ),
+              builder: (context, child) {
+                return SlideTransition(
+                  position:
+                      Tween(
+                        begin: const Offset(0, 1),
+                        end: const Offset(0, 0),
+                      ).animate(
+                        CurvedAnimation(
+                          parent: _animationController,
+                          curve: Curves.elasticOut,
+                        ),
+                      ),
 
-          child: child,
+                  child: child,
+                );
+              },
+            ),
+          ),
+          loading: () => Center(child: CircularProgressIndicator()),
+          error: (e, stack) => Center(child: Text("Unexpected error occured")),
         );
-      },
-    );
   }
 }

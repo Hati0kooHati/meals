@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals_app/models/meal.dart';
-import 'package:meals_app/providers/favorite_meals_provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class MealInfoScreen extends ConsumerWidget {
@@ -18,41 +17,8 @@ class MealInfoScreen extends ConsumerWidget {
 
   @override
   Widget build(context, WidgetRef ref) {
-    final bool isFavorite = ref.watch(favoriteMealsProvider).contains(meal);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(meal.title),
-        actions: [
-          IconButton(
-            onPressed: () {
-              ref.read(favoriteMealsProvider.notifier).changeMealsState(meal);
-
-              final List<String> actionInfo = isFavorite
-                  ? ["deleted", "from"]
-                  : ["added", "to"];
-
-              showInfoAfterStarPressed(
-                context,
-                "meal has been ${actionInfo[0]} ${actionInfo[1]} favorites",
-              );
-            },
-            icon: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 200),
-              transitionBuilder: (child, animation) {
-                return RotationTransition(
-                  turns: Tween(begin: 0.6, end: 1.0).animate(animation),
-                  child: child,
-                );
-              },
-              child: Icon(
-                Icons.star,
-                color: isFavorite ? Colors.yellow : Colors.white,
-                key: ValueKey(isFavorite),
-              ),
-            ),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: Text(meal.title)),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 10),
         child: Column(

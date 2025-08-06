@@ -10,4 +10,17 @@ class Category {
   final String id;
   final String title;
   final Color color;
+
+  factory Category.fromMap(Map map) {
+    return Category(
+      id: map["id"],
+      title: map["title"],
+      color: Color.fromARGB(
+        255,
+        map["color"][0],
+        map["color"][1],
+        map["color"][2],
+      ),
+    );
+  }
 }

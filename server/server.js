@@ -377,7 +377,7 @@ app.use(
     graphqlHTTP({
         schema,
         rootValue: root,
-        graphiql: true, // интерфейс в браузере
+        graphiql: true,
     })
 );
 

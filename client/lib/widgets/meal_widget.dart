@@ -80,7 +80,7 @@ class MealWidget extends StatelessWidget {
                             Icon(Icons.work),
                             const SizedBox(width: 5),
                             Text(
-                              meal.complexity.name,
+                              meal.complexity,
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
@@ -90,7 +90,7 @@ class MealWidget extends StatelessWidget {
                           children: [
                             Icon(Icons.attach_money),
                             Text(
-                              meal.affordability.name,
+                              meal.affordability,
                               style: TextStyle(color: Colors.white),
                             ),
                           ],
